@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Breath — an interactive journey into the human lungs</title>
+  <meta name="description" content="Interactive, scientifically accurate 3D simulation of human lungs and breathing.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%2305070b'/%3E%3Cpath d='M16 6v9m0 0c-2 0-3 1-3 3 0 5-2 7-5 7-2 0-2-3-1-7 1-5 4-9 6-9 1 0 1 1 1 3m2 3c2 0 3 1 3 3 0 5 2 7 5 7 2 0 2-3 1-7-1-5-4-9-6-9-1 0-1 1-1 3' fill='none' stroke='%23ff9d92' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E">
+  <script>document.documentElement.classList.add('fonts-pending'); setTimeout(function () { document.documentElement.classList.remove('fonts-pending'); }, 2500);</script>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+  { "imports": { "three": "./vendor/three/build/three.module.min.js", "three/addons/": "./vendor/three/examples/jsm/" } }
+  </script>
+</head>
+<body>
+  <canvas id="scene" aria-label="3D model of the human chest"></canvas>
+
+  <div id="ui" class="is-hidden">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand__mark" data-i18n="title">Breath</span>
+        <span class="brand__tag" data-i18n="tagline">A journey into the human lungs</span>
+      </div>
+      <div class="tools">
+        <button class="tool" id="btn-labels" aria-pressed="true" data-i18n-title="labels" title="Labels">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10l6 5-6 5H4z"/><circle cx="8.5" cy="12" r="1.2"/></svg><span data-i18n="labels">Labels</span>
+        </button>
+        <div class="tool-group">
+          <button class="tool" id="btn-layers" aria-expanded="false" data-i18n-title="layers" title="Layers">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 5-9 5-9-5z"/><path d="M3 14l9 5 9-5"/></svg><span data-i18n="layers">Layers</span>
+          </button>
+          <div class="popover" id="layers-pop" hidden>
+            <label class="check"><input type="checkbox" data-layer="skin" checked><span data-i18n="layer_skin">Skin</span></label>
+            <label class="check"><input type="checkbox" data-layer="bones" checked><span data-i18n="layer_bones">Skeleton</span></label>
+            <label class="check"><input type="checkbox" data-layer="vessels" checked><span data-i18n="layer_vessels">Vessels</span></label>
+          </div>
+        </div>
+        <button class="tool" id="btn-sound" aria-pressed="true" data-i18n-title="sound" title="Sound">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4z"/><path class="wave" d="M16.5 9a4.5 4.5 0 010 6M19 6.5a8 8 0 010 11"/><path class="mute" d="M17 9.5l5 5m0-5l-5 5"/></svg><span data-i18n="sound">Sound</span>
+        </button>
+        <button class="tool tool--lang" id="btn-lang" title="Language / اللغة"><span data-i18n="language">عربي</span></button>
+      </div>
+    </header>
+
+    <aside class="panel panel--vitals" id="vitals">
+      <div class="panel__head">
+        <h2 data-i18n="readouts">Live readouts</h2>
+        <div class="phase" id="phase"><i class="phase__dot"></i><span id="phase-text">Inhale</span></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat__label" data-i18n="rr">Breathing rate</div><div class="stat__value"><b id="v-rr">14</b><span data-i18n="rrUnit">breaths/min</span></div></div>
+        <div class="stat"><div class="stat__label" data-i18n="tv">Tidal volume</div><div class="stat__value"><b id="v-tv">500</b><span data-i18n="tvUnit">mL</span></div></div>
+        <div class="stat"><div class="stat__label" data-i18n="mv">Minute ventilation</div><div class="stat__value"><b id="v-mv">7.0</b><span data-i18n="mvUnit">L/min</span></div></div>
+        <div class="stat stat--spo2" id="stat-spo2"><div class="stat__label" data-i18n="spo2">Blood oxygen · SpO₂</div><div class="stat__value"><b id="v-spo2">97</b><span data-i18n="spo2Unit">%</span></div><div class="meter"><i id="spo2-bar"></i></div></div>
+      </div>
+      <div class="graph">
+        <div class="graph__head"><span data-i18n="volume">Lung volume</span><span class="graph__now"><b id="v-vol">2.40</b> <span data-i18n="litres">L</span></span></div>
+        <canvas id="graph" width="520" height="190"></canvas>
+      </div>
+      <div class="minis">
+        <div><span data-i18n="hr">Heart rate</span><b><i id="v-hr">68</i> <small data-i18n="hrUnit">bpm</small></b></div>
+        <div><span data-i18n="pio2">Inspired O₂</span><b><i id="v-pio2">149</i> <small data-i18n="mmHg">mmHg</small></b></div>
+        <div><span data-i18n="pao2">Alveolar O₂</span><b><i id="v-pao2">100</i> <small data-i18n="mmHg">mmHg</small></b></div>
+      </div>
+    </aside>
+
+    <aside class="panel panel--controls" id="controls">
+      <h2 data-i18n="scenario">Scenario</h2>
+      <div class="scenarios" id="scenarios" role="radiogroup">
+        <button class="scn is-active" data-scn="rest" role="radio" aria-checked="true"><i style="--c:#7ee0c2"></i><span data-i18n="s_rest">Rest</span></button>
+        <button class="scn" data-scn="exercise" role="radio" aria-checked="false"><i style="--c:#ffb454"></i><span data-i18n="s_exercise">Exercise</span></button>
+        <button class="scn" data-scn="altitude" role="radio" aria-checked="false"><i style="--c:#8fb8ff"></i><span data-i18n="s_altitude">High altitude</span></button>
+        <button class="scn" data-scn="asthma" role="radio" aria-checked="false"><i style="--c:#ff8a7a"></i><span data-i18n="s_asthma">Asthma</span></button>
+        <button class="scn" data-scn="smoker" role="radio" aria-checked="false"><i style="--c:#a8a29a"></i><span data-i18n="s_smoker">Smoker's lungs</span></button>
+      </div>
+      <p class="scn-desc" id="scn-desc"></p>
+      <div class="sliders">
+        <label class="slider"><span class="slider__top"><span data-i18n="rate">Breathing rate</span><output id="o-rate">14</output></span>
+          <input type="range" id="s-rate" min="6" max="40" step="1" value="14"></label>
+        <label class="slider"><span class="slider__top"><span data-i18n="depth">Breath depth</span><output id="o-depth">500 mL</output></span>
+          <input type="range" id="s-depth" min="200" max="3000" step="10" value="500"></label>
+      </div>
+      <div class="fact" id="fact">
+        <div class="fact__head"><span data-i18n="facts">Did you know</span><button id="fact-next" class="fact__next" data-i18n-title="next" title="Next fact" aria-label="Next fact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
+        <div class="fact__num" id="fact-num"></div>
+        <p class="fact__text" id="fact-text"></p>
+        <div class="fact__dots" id="fact-dots"></div>
+      </div>
+    </aside>
+
+    <div class="bottom">
+      <div class="caption" id="caption">
+        <p id="caption-text"></p>
+        <div class="legend" id="legend"></div>
+      </div>
+      <nav class="levels" id="levels" aria-label="Zoom level">
+        <button class="lvl is-active" data-level="0"><b>1</b><span data-i18n="l_body">Body</span><small data-i18n="scale_body">30 cm</small></button>
+        <i class="lvl__line"></i>
+        <button class="lvl" data-level="1"><b>2</b><span data-i18n="l_airways">Airways</span><small data-i18n="scale_airways">2 cm</small></button>
+        <i class="lvl__line"></i>
+        <button class="lvl" data-level="2"><b>3</b><span data-i18n="l_alveolus">Alveolus</span><small data-i18n="scale_alveolus">0.2 mm</small></button>
+      </nav>
+    </div>
+
+    <div id="labels" aria-hidden="true"></div>
+    <div id="info" class="info" hidden>
+      <button class="info__close" id="info-close" data-i18n-title="close" title="Close" aria-label="Close">×</button>
+      <div class="info__alt" id="info-alt"></div>
+      <h3 id="info-name"></h3>
+      <p id="info-desc"></p>
+    </div>
+    <i id="info-pin" class="info-pin" hidden></i>
+  </div>
+
+  <div id="intro" class="intro">
+    <div class="intro__inner">
+      <div class="intro__eyebrow">Interactive anatomy · تشريح تفاعلي</div>
+      <h1><span data-i18n="title">Breath</span></h1>
+      <p class="intro__tag" data-i18n="tagline">A journey into the human lungs</p>
+      <p class="intro__text" data-i18n="intro"></p>
+      <div class="intro__load" id="intro-load"><div class="bar"><i id="load-bar"></i></div><span id="load-text" data-i18n="loading">Preparing anatomy</span></div>
+      <div class="intro__go" id="intro-go" hidden>
+        <button id="btn-begin" class="begin"><span data-i18n="begin">Begin</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14m-6-6l6 6-6 6"/></svg></button>
+        <button id="intro-lang" class="ghost"><span data-i18n="language">عربي</span></button>
+      </div>
+      <p class="intro__hint" data-i18n="introHint"></p>
+    </div>
+  </div>
+  <div id="fatal" class="fatal" hidden></div>
+
+  <script type="module">
+    // Loader. Simple static servers (python3 -m http.server) reset connections when a browser fires a burst of
+    // parallel requests, so everything is fetched in two calm lanes - fonts and code - with retries.
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    async function fetchRetry(url, tries = 5) {
+      for (let i = 0; ; i++) {
+        try { const r = await fetch(url); if (!r.ok) throw new Error(url + ' -> HTTP ' + r.status); return r; }
+        catch (e) { if (i >= tries - 1) throw e; await sleep(200 * (i + 1)); }
+      }
+    }
+    window.__fetchRetry = fetchRetry;
+
+    const FONTS = [
+      ['Instrument', 'instrument-serif-400', 400], ['Plex', 'ibm-plex-sans-400', 400], ['Plex', 'ibm-plex-sans-500', 500],
+      ['Plex Arabic', 'ibm-plex-sans-arabic-400', 400], ['Plex Mono', 'ibm-plex-mono-400', 400], ['Plex', 'ibm-plex-sans-600', 600],
+      ['Plex Mono', 'ibm-plex-mono-500', 500], ['Plex Arabic', 'ibm-plex-sans-arabic-500', 500], ['Plex Arabic', 'ibm-plex-sans-arabic-600', 600],
+      ['Naskh', 'noto-naskh-arabic-500', 500],
+    ];
+    (async () => {
+      let n = 0;
+      for (const [family, file, weight] of FONTS) {
+        try {
+          const buf = await (await fetchRetry('assets/fonts/' + file + '.woff2', 3)).arrayBuffer();
+          const face = new FontFace(family, buf, { weight: String(weight), style: 'normal' });
+          await face.load(); document.fonts.add(face);
+        } catch (e) { console.warn('Font not loaded:', file); }
+        if (++n === 4) document.documentElement.classList.remove('fonts-pending');
+      }
+    })();
+
+    // dependencies first, so every import() below adds exactly one request
+    const MODULES = [
+      'three',
+      'three/addons/controls/OrbitControls.js', 'three/addons/utils/BufferGeometryUtils.js', 'three/addons/loaders/GLTFLoader.js',
+      'three/addons/loaders/RGBELoader.js', 'three/addons/shaders/CopyShader.js', 'three/addons/shaders/LuminosityHighPassShader.js',
+      'three/addons/shaders/OutputShader.js', 'three/addons/postprocessing/Pass.js', 'three/addons/postprocessing/ShaderPass.js',
+      'three/addons/postprocessing/MaskPass.js', 'three/addons/postprocessing/EffectComposer.js', 'three/addons/postprocessing/RenderPass.js',
+      'three/addons/postprocessing/UnrealBloomPass.js', 'three/addons/postprocessing/OutputPass.js',
+      './js/i18n.js', './js/physiology.js', './js/deform.js', './js/audio.js', './js/anatomy.js', './js/airways.js', './js/alveoli.js', './js/ui.js',
+      './js/main.js',
+    ];
+    const bar = document.getElementById('load-bar');
+    try {
+      let i = 0;
+      for (const spec of MODULES) {
+        if (import.meta.resolve) await fetchRetry(import.meta.resolve(spec));   // warms the HTTP cache; survives a dropped connection
+        await import(spec);
+        if (spec !== './js/main.js') bar.style.width = (3 * ++i / MODULES.length).toFixed(1) + '%';
+      }
+      try { sessionStorage.removeItem('breath-reloads'); } catch (e) { /* private mode */ }
+    } catch (err) {
+      console.error(err);
+      let n = 0; try { n = +sessionStorage.getItem('breath-reloads') || 0; sessionStorage.setItem('breath-reloads', n + 1); } catch (e) { n = 9; }
+      if (n < 2) { await sleep(600); location.reload(); }
+      else { const f = document.getElementById('fatal'); f.hidden = false; f.textContent = 'Could not load the exhibit (' + (err && err.message ? err.message : err) + '). Check that the local server is still running, then reload.'; }
+    }
+  </script>
+</body>
+</html>

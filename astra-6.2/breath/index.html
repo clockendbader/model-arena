@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#080e13" />
+    <title>Pulmo — Respiratory Atlas</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f302f'/%3E%3Cpath d='M15 6v9l-5 4m7-13v9l5 4M12 10C8 9 3 20 4 25c1 3 8 0 9-3V11m7-1c4-1 9 10 8 15-1 3-8 0-9-3V11' fill='none' stroke='%2362e3c6' stroke-width='2'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script type="importmap">
+      { "imports": { "three": "./assets/three/three.module.js" } }
+    </script>
+  </head>
+  <body>
+    <header>
+      <div class="brand"><i data-icon="lungs"></i>Pulmo</div>
+      <span class="brandline"></span><span class="atlas" data-t="atlas"></span>
+      <div class="headerActions">
+        <button id="sound">
+          <i data-icon="mute"></i><span data-t="muted"></span></button
+        ><button id="lang">
+          <i data-icon="globe"></i><span>العربية</span>
+        </button>
+      </div>
+    </header>
+    <main>
+      <section class="intro">
+        <div>
+          <div class="eyebrow"><b></b><span data-t="kicker"></span></div>
+          <h1 data-t="title"></h1>
+          <p data-t="sub"></p>
+        </div>
+        <button id="pause">
+          <i data-icon="pause"></i><span data-t="pause"></span>
+        </button>
+      </section>
+      <div class="dashboard">
+        <div class="primary">
+          <section class="stage" id="stage">
+            <div id="world"></div>
+            <div class="stagehead">
+              <span class="tag"
+                ><b class="dot"></b><span data-t="viewport"></span></span
+              ><button class="square" id="expand" aria-label="Expand view">
+                <i data-icon="expand"></i>
+              </button>
+            </div>
+            <div id="labels"></div>
+            <div id="info" hidden>
+              <button id="close">×</button><strong></strong>
+              <p></p>
+            </div>
+            <div class="stagefoot">
+              <div class="tabs" id="tabs"></div>
+              <div class="stagehint">
+                <span><i data-icon="mouse"></i><span data-t="hint"></span></span
+                ><span class="orient" id="orient"></span>
+              </div>
+            </div>
+          </section>
+          <section class="panel scenarios">
+            <div class="panelhead">
+              <span class="sectionicon"><i data-icon="layers"></i></span>
+              <h2 data-t="scenarios"></h2>
+            </div>
+            <div id="scenarioList"></div>
+            <p id="description"></p>
+          </section>
+        </div>
+        <aside>
+          <section class="panel phys">
+            <div class="panelhead">
+              <span class="sectionicon"><i data-icon="pulse"></i></span>
+              <h2 data-t="phys"></h2>
+              <span class="live"
+                ><b class="dot"></b><span id="status"></span
+              ></span>
+            </div>
+            <div id="metrics"></div>
+            <div class="chart">
+              <div class="charttitle">
+                <strong data-t="volume"></strong><small id="phase"></small>
+              </div>
+              <div class="plot">
+                <div class="ticks">
+                  <span id="topTick"></span><span id="midTick"></span
+                  ><span id="bottomTick"></span>
+                </div>
+                <canvas id="plot"></canvas>
+              </div>
+              <div class="timeline">
+                <span>−15 s</span><span>−10 s</span><span>−5 s</span
+                ><span data-t="now"></span>
+              </div>
+            </div>
+          </section>
+          <section class="panel settings">
+            <div class="panelhead">
+              <span class="sectionicon"><i data-icon="sliders"></i></span>
+              <h2 data-t="controls"></h2>
+              <button
+                class="reset"
+                id="reset"
+                aria-label="Reset breathing controls"
+              >
+                <i data-icon="reset"></i>
+              </button>
+            </div>
+            <label for="rate"
+              ><span data-t="rate"></span><output id="rateOut"></output></label
+            ><input type="range" id="rate" min="6" max="40" value="14" /><label
+              for="depth"
+              ><span data-t="depth"></span
+              ><output id="depthOut"></output></label
+            ><input
+              type="range"
+              id="depth"
+              min="200"
+              max="2000"
+              step="10"
+              value="500"
+            />
+          </section>
+        </aside>
+      </div>
+      <section class="facts">
+        <div>
+          <i data-icon="book"></i>
+          <h2 data-t="facts"></h2>
+        </div>
+        <p data-t="fact1"></p>
+        <p data-t="fact2"></p>
+      </section>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

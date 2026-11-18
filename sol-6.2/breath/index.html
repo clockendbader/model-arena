@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a101b">
+  <meta name="description" content="An interactive 3D exhibit on human breathing, from the rib cage to alveolar gas exchange.">
+  <title>Breath — The breathing body</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23112a36'/%3E%3Cpath fill='none' stroke='%237de5ed' stroke-width='2' d='M4 17h6l3-8 5 14 3-6h7'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./assets/type.css">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">
+    {"imports":{"three":"./assets/vendor/three/build/three.module.min.js","three/addons/":"./assets/vendor/three/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon" data-icon="pulse"></span>
+      <span class="brand-name">BREATH<span>.</span></span>
+      <span class="brand-divider"></span>
+      <span class="brand-sub" data-t="exhibit">Human physiology exhibit</span>
+    </div>
+    <div class="top-actions">
+      <button type="button" id="sound" class="top-button" aria-pressed="false"><span data-icon="mute"></span><span data-t="soundOff">Sound off</span></button>
+      <button type="button" id="language" class="top-button language" aria-label="العربية"><span data-icon="globe"></span><span lang="ar">العربية</span></button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <section class="controls-column" aria-labelledby="intro">
+      <div class="intro">
+        <div class="eyebrow"><span></span><span data-t="anatomy">Interactive anatomy</span></div>
+        <h1 id="intro"><span data-t="heading1">The breathing</span><br><span data-t="heading2">body</span><em>.</em></h1>
+        <p data-t="intro">Follow a breath from the chest to the microscopic sacs that oxygenate your blood.</p>
+      </div>
+      <div class="panel controls-panel">
+        <h2><span data-icon="tune"></span><span data-t="controls">Breathing controls</span></h2>
+        <div class="panel-body">
+          <div class="slider">
+            <div><label for="rate" data-t="rate">Breathing rate</label><output id="rate-out" for="rate" dir="ltr">14 <small>bpm</small></output></div>
+            <input id="rate" type="range" min="6" max="36" step="1" value="14">
+            <div class="range-limits"><span data-t="slow">Slow</span><span data-t="fast">Fast</span></div>
+          </div>
+          <div class="slider">
+            <div><label for="depth" data-t="depth">Breath depth</label><output id="depth-out" for="depth" dir="ltr">500 <small>mL</small></output></div>
+            <input id="depth" type="range" min="250" max="1800" step="10" value="500">
+            <div class="range-limits"><span data-t="shallow">Shallow</span><span data-t="deep">Deep</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel scenario-panel">
+        <h2><span data-icon="layers"></span><span data-t="scenarios">Scenarios</span></h2>
+        <div class="scenario-list" aria-label="Scenarios" data-label="scenarios">
+          <button type="button" data-scenario="rest" aria-pressed="true"><span data-icon="rest"></span><span data-t="rest">Rest</span><i></i></button>
+          <button type="button" data-scenario="exercise" aria-pressed="false"><span data-icon="exercise"></span><span data-t="exercise">Exercise</span><i></i></button>
+          <button type="button" data-scenario="altitude" aria-pressed="false"><span data-icon="altitude"></span><span data-t="altitude">High altitude</span><i></i></button>
+          <button type="button" data-scenario="asthma" aria-pressed="false"><span data-icon="wind"></span><span data-t="asthma">Asthma</span><i></i></button>
+          <button type="button" data-scenario="smoke" aria-pressed="false"><span data-icon="smoke"></span><span data-t="smoke">Smoker’s lungs</span><i></i></button>
+        </div>
+        <p id="scenario-note" data-t="restNote">Quiet breathing in a healthy adult at sea level.</p>
+      </div>
+    </section>
+
+    <section id="stage" class="stage" aria-label="3D breathing simulation" data-label="simulation">
+      <div class="stage-grid"></div>
+      <div class="stage-radar"></div>
+      <div id="viewport" class="viewport"></div>
+      <div class="stage-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <nav class="view-nav" aria-label="Magnification" data-label="magnification">
+        <button type="button" data-view="body" aria-pressed="true"><span data-icon="body"></span><span data-t="body">Body</span></button>
+        <button type="button" data-view="airways" aria-pressed="false"><span data-icon="branch"></span><span data-t="airways">Airways</span></button>
+        <button type="button" data-view="alveolus" aria-pressed="false"><span data-icon="alveolus"></span><span data-t="alveolus">Alveolus</span></button>
+      </nav>
+      <div class="stage-scale"><span></span><b id="scale-name" data-t="bodyScale">CHEST / ORGAN SCALE</b></div>
+      <div class="view-tools">
+        <button type="button" id="reset" title="Reset camera" aria-label="Reset camera" data-label="reset"><span data-icon="reset"></span></button>
+        <button type="button" id="toggle-labels" title="Anatomy labels" aria-label="Anatomy labels" data-label="labels" aria-pressed="true"><span data-icon="labels"></span></button>
+      </div>
+      <div id="pins" class="pins"></div>
+      <div id="selection" class="selection" hidden aria-live="polite">
+        <button type="button" id="close-detail" data-icon="close" aria-label="Close" data-label="close"></button>
+        <div class="mini-label" data-t="structure">Anatomical structure</div>
+        <strong id="detail-name"></strong><p id="detail-text"></p>
+      </div>
+      <div class="phase-card">
+        <button type="button" id="pause" class="phase-button" aria-label="Pause breathing" data-label="pause" data-icon="pause"></button>
+        <div class="phase-content"><span class="mini-label" data-t="cycle">Breathing cycle</span><strong id="phase-name" data-t="inhale">Inhaling</strong><div class="phase-track" aria-hidden="true"><i id="phase-bar"></i></div></div>
+        <span id="phase-direction" data-icon="down" aria-hidden="true"></span>
+      </div>
+      <div id="loading" class="loading" role="status" data-t="loading">Loading anatomy…</div>
+      <div class="stage-footer">
+        <div class="drag-help"><span data-icon="mouse"></span><span data-t="gesture">Drag to orbit · Scroll to zoom · Right-drag to pan</span></div>
+        <div id="legend" class="legend"><i></i><span data-t="airflow">Airflow</span></div>
+      </div>
+    </section>
+
+    <aside class="monitor-column">
+      <section class="panel vitals" aria-labelledby="vitals-title">
+        <h2 id="vitals-title"><span data-icon="pulse"></span><span data-t="vitals">Live physiology</span><span class="live"><i></i><span id="live-status" data-t="live">LIVE</span></span></h2>
+        <div class="metrics">
+          <div class="metric"><span data-t="rate">Breathing rate</span><div dir="ltr"><strong id="metric-rate">14</strong><small>bpm</small></div></div>
+          <div class="metric"><span data-t="tidal">Tidal volume</span><div dir="ltr"><strong id="metric-tidal">500</strong><small>mL</small></div></div>
+          <div class="metric"><span data-t="ventilation">Minute ventilation</span><div dir="ltr"><strong id="metric-minute">7.0</strong><small>L/min</small></div></div>
+          <div class="metric oxygen"><span><abbr title="Estimated peripheral oxygen saturation">SpO₂</abbr></span><div dir="ltr"><strong id="metric-spo">98</strong><small>%</small></div></div>
+        </div>
+        <div class="graph-block">
+          <div class="graph-title"><h3 data-t="graph">Lung volume</h3><span data-t="window">LAST 12 s</span></div>
+          <div class="graph-frame">
+            <div class="graph-axis" dir="ltr"><span id="graph-top">3.2 L</span><span id="graph-mid">2.7 L</span><span id="graph-low">2.2 L</span></div>
+            <canvas id="graph" role="img" aria-label="Live lung volume over the last twelve seconds" data-label="graphLabel"></canvas>
+          </div>
+          <div class="graph-times" dir="ltr"><span>−12 s</span><span>−6 s</span><span data-t="now">NOW</span></div>
+        </div>
+      </section>
+      <section class="panel facts" aria-labelledby="facts-title">
+        <h2 id="facts-title"><span data-icon="book"></span><span data-t="facts">Inside the lungs</span></h2>
+        <div class="fact"><span data-icon="alveolus"></span><div><strong data-t="fact1Title">300–500 million</strong><p data-t="fact1">Alveoli in a typical adult pair of lungs</p></div></div>
+        <div class="fact"><span data-icon="surface"></span><div><strong data-t="fact2Title">≈70 m²</strong><p data-t="fact2">Gas exchange surface at resting lung volume</p></div></div>
+        <div class="fact"><span data-icon="wind"></span><div><strong data-t="fact3Title">12–20 breaths/min</strong><p data-t="fact3">Typical resting rate for a healthy adult</p></div></div>
+      </section>
+    </aside>
+  </main>
+  <footer class="site-footer"><span><i></i><span data-t="footer">Educational simulation · Values are illustrative</span></span><button type="button" id="open-credits" data-t="credits">Sources &amp; credits ↗</button></footer>
+  <dialog id="credits-dialog" aria-labelledby="credits-title">
+    <form method="dialog"><button type="submit" data-icon="close" aria-label="Close" data-label="close"></button></form>
+    <h2 id="credits-title" data-t="creditsTitle">Sources &amp; credits</h2>
+    <p data-t="creditsIntro">The chest anatomy is adapted from BodyParts3D, © the Database Center for Life Science, through Enrique Kalven’s Human Body Atlas.</p>
+    <ul>
+      <li><a href="https://dbarchive.biosciencedbc.jp/en/bodyparts3d/download.html" target="_blank" rel="noopener">BodyParts3D / Anatomography ↗</a></li>
+      <li><a href="https://pubmed.ncbi.nlm.nih.gov/14512270/" target="_blank" rel="noopener" data-t="creditsAlveoli">Human alveolar counts ↗</a></li>
+      <li><a href="https://www.cdc.gov/yellow-book/hcp/environmental-hazards-risks/high-altitude-travel-and-altitude-illness.html" target="_blank" rel="noopener" data-t="creditsAltitude">CDC Yellow Book on altitude ↗</a></li>
+      <li><a href="./assets/CREDITS.md" download data-t="creditsDownload">Download the complete asset credits ↓</a></li>
+    </ul>
+  </dialog>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

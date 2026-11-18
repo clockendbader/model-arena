@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HIGHLINE — Rooftop Run</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #f6efe6;
+      --dim: rgba(246, 239, 230, 0.62);
+      --accent: #ff4a24;
+      --accent2: #ffb35c;
+      --good: #4dffa6;
+      --bad: #ff5a4a;
+      --glass: rgba(14, 16, 22, 0.55);
+      --font: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0c10; color: var(--ink); font-family: var(--font); }
+    canvas#game { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; }
+    .hidden { display: none !important; }
+
+    /* ---------- HUD ---------- */
+    #hud { position: fixed; inset: 0; pointer-events: none; }
+    #timer { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-weight: 700; font-size: 34px; letter-spacing: 1px; text-shadow: 0 2px 12px rgba(0,0,0,0.6); }
+    #timer small { font-size: 20px; opacity: 0.7; }
+    #cpinfo { position: absolute; top: 66px; left: 50%; transform: translateX(-50%); font-size: 15px; letter-spacing: 3px; color: var(--dim); text-transform: uppercase; text-shadow: 0 1px 6px rgba(0,0,0,0.7); }
+    #split { position: absolute; top: 96px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 24px; font-weight: 700; padding: 6px 16px; border-radius: 4px; background: var(--glass); opacity: 0; transition: opacity .25s; }
+    #split.show { opacity: 1; }
+    #split .lbl { font-family: var(--font); font-size: 15px; letter-spacing: 3px; color: var(--dim); margin-right: 10px; font-weight: 600; }
+    #split.good .d { color: var(--good); }
+    #split.bad .d { color: var(--bad); }
+    #hint { position: absolute; bottom: 82px; left: 50%; transform: translateX(-50%); font-size: 22px; letter-spacing: 1px; padding: 9px 22px; background: var(--glass); border-left: 3px solid var(--accent); border-radius: 2px; opacity: 0; transition: opacity .35s; white-space: nowrap; text-shadow: 0 1px 4px rgba(0,0,0,0.5); }
+    #hint.show { opacity: 1; }
+    #hint b { color: var(--accent2); font-weight: 700; }
+    #speed { position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); width: 220px; height: 3px; background: rgba(255,255,255,0.16); }
+    #speed i { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: linear-gradient(90deg, var(--accent2), var(--accent)); box-shadow: 0 0 10px var(--accent); }
+    #speedv { position: absolute; bottom: 46px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 12px; color: var(--dim); }
+    #cross { position: absolute; top: 50%; left: 50%; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: rgba(255,255,255,0.65); box-shadow: 0 0 4px rgba(0,0,0,0.6); }
+    #falls { position: absolute; top: 28px; right: 28px; font-size: 15px; letter-spacing: 2px; color: var(--dim); text-transform: uppercase; }
+    #ghostinfo { position: absolute; top: 28px; left: 28px; font-size: 15px; letter-spacing: 2px; color: #8fdcff; text-transform: uppercase; }
+    #toast { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); font-size: 54px; font-weight: 800; letter-spacing: 6px; text-shadow: 0 4px 30px rgba(0,0,0,0.6); opacity: 0; transition: opacity .3s; }
+    #toast.show { opacity: 1; }
+
+    /* ---------- Overlays ---------- */
+    .overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+    #start { background: radial-gradient(ellipse at 70% 40%, rgba(255,140,60,0.12), rgba(8,9,14,0.35) 60%), linear-gradient(180deg, rgba(8,9,14,0.15), rgba(8,9,14,0.75)); cursor: pointer; }
+    .panel { width: min(560px, 92vw); max-height: 94vh; overflow-y: auto; padding: 30px 40px; background: rgba(10, 12, 18, 0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-top: 3px solid var(--accent); }
+    #start .panel { width: min(640px, 92vw); }
+    h1 { margin: 0; font-size: 92px; line-height: 0.85; font-weight: 800; letter-spacing: 8px; }
+    h1 span { color: var(--accent); }
+    .tag { margin: 10px 0 26px; font-size: 18px; letter-spacing: 5px; text-transform: uppercase; color: var(--accent2); }
+    .controls { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; font-size: 18px; margin-bottom: 26px; }
+    .controls kbd { font-family: var(--mono); font-size: 13px; padding: 3px 8px; border: 1px solid rgba(255,255,255,0.25); border-bottom-width: 2px; border-radius: 3px; background: rgba(255,255,255,0.06); white-space: nowrap; }
+    .controls div:nth-child(odd) { text-align: right; }
+    .cta { font-size: 30px; font-weight: 700; letter-spacing: 6px; text-transform: uppercase; animation: pulse 1.6s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity: 0.45; } }
+    .best { margin-top: 12px; font-family: var(--mono); color: var(--dim); font-size: 15px; }
+    #loadbar { height: 3px; background: rgba(255,255,255,0.12); margin-top: 18px; overflow: hidden; }
+    #loadbar i { display: block; height: 100%; width: 0%; background: var(--accent); transition: width .2s; }
+    #loadtxt { font-family: var(--mono); font-size: 12px; color: var(--dim); margin-top: 6px; }
+
+    #pause { background: rgba(6, 7, 10, 0.55); }
+    #pause h2, #results h2 { margin: 0 0 14px; font-size: 48px; letter-spacing: 6px; font-weight: 800; }
+    .btn { display: block; width: 100%; margin: 10px 0; padding: 12px 16px; font-family: var(--font); font-size: 22px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--ink); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); cursor: pointer; text-align: left; transition: background .15s, border-color .15s; }
+    .btn:hover { background: rgba(255, 74, 36, 0.22); border-color: var(--accent); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); }
+    .btn.primary:hover { background: #ff6440; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 14px 0; font-size: 19px; letter-spacing: 2px; text-transform: uppercase; }
+    .row input[type=range] { width: 220px; accent-color: var(--accent); }
+    .row .val { font-family: var(--mono); font-size: 14px; color: var(--dim); width: 44px; text-align: right; }
+    .toggle { position: relative; width: 52px; height: 26px; background: rgba(255,255,255,0.15); border-radius: 13px; cursor: pointer; transition: background .2s; flex: none; }
+    .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: left .2s; }
+    .toggle.on { background: var(--accent); }
+    .toggle.on::after { left: 29px; }
+    .note { font-size: 14px; color: var(--dim); letter-spacing: 1px; margin-top: 8px; }
+
+    #results { background: rgba(6, 7, 10, 0.6); }
+    .bigtime { font-family: var(--mono); font-size: 58px; font-weight: 700; }
+    .record { display: inline-block; margin-left: 12px; padding: 4px 10px; font-size: 16px; letter-spacing: 3px; background: var(--good); color: #062; font-family: var(--font); font-weight: 800; vertical-align: middle; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 20px; margin: 16px 0; font-size: 19px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); }
+    .stats b { color: var(--ink); font-family: var(--mono); font-size: 17px; letter-spacing: 0; }
+    table.splits { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 14px; margin: 8px 0 18px; }
+    table.splits td { padding: 2px 6px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    table.splits td:first-child { font-family: var(--font); font-size: 16px; letter-spacing: 2px; color: var(--dim); }
+    table.splits td.good { color: var(--good); }
+    table.splits td.bad { color: var(--bad); }
+    #lockmsg { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 18px; letter-spacing: 2px; color: var(--accent2); }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/build/three.module.js",
+        "three/addons/": "./vendor/three/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hidden">
+    <div id="timer">0:00<small>.00</small></div>
+    <div id="cpinfo">Checkpoint 0 / 10</div>
+    <div id="split"><span class="lbl">CP 1</span><span class="t">0:00.00</span> <span class="d"></span></div>
+    <div id="falls">Falls 0</div>
+    <div id="ghostinfo"></div>
+    <div id="hint"></div>
+    <div id="speedv">0 km/h</div>
+    <div id="speed"><i></i></div>
+    <div id="cross"></div>
+    <div id="toast"></div>
+  </div>
+
+  <div id="start" class="overlay">
+    <div class="panel">
+      <h1>HIGH<span>LINE</span></h1>
+      <div class="tag">A rooftop run at golden hour</div>
+      <div class="controls">
+        <div><kbd>W A S D</kbd></div><div>Run &middot; <kbd>Mouse</kbd> look</div>
+        <div><kbd>SHIFT</kbd></div><div>Sprint (build momentum)</div>
+        <div><kbd>SPACE</kbd></div><div>Jump &middot; hold for height &middot; wall-run kick-off &middot; climb</div>
+        <div><kbd>C</kbd> / <kbd>CTRL</kbd></div><div>Slide while running &middot; tap before a big landing to roll</div>
+        <div><kbd>E</kbd></div><div>Grab zipline</div>
+        <div><kbd>R</kbd></div><div>Back to last checkpoint &middot; <kbd>ESC</kbd> pause</div>
+      </div>
+      <div class="cta" id="cta">Loading&hellip;</div>
+      <div class="best" id="startbest"></div>
+      <div id="loadbar"><i></i></div>
+      <div id="loadtxt"></div>
+    </div>
+  </div>
+
+  <div id="pause" class="overlay hidden">
+    <div class="panel">
+      <h2>PAUSED</h2>
+      <button class="btn primary" id="btnResume">Resume</button>
+      <button class="btn" id="btnCheckpoint">Back to checkpoint</button>
+      <button class="btn" id="btnRestart">Restart run</button>
+      <div class="row"><span>Mouse sensitivity</span><input type="range" id="sens" min="0.2" max="3" step="0.05" value="1" /><span class="val" id="sensv">1.00</span></div>
+      <div class="row"><span>Volume</span><input type="range" id="vol" min="0" max="1" step="0.05" value="0.8" /><span class="val" id="volv">80</span></div>
+      <div class="row"><span>Runner's vision</span><div class="toggle on" id="tglRV"></div></div>
+      <div class="row"><span>Ghost runner</span><div class="toggle on" id="tglGhost"></div></div>
+      <div class="note">Tip: hold SHIFT and chain moves without stopping to reach top speed.</div>
+    </div>
+  </div>
+
+  <div id="results" class="overlay hidden">
+    <div class="panel">
+      <h2>FINISH</h2>
+      <div><span class="bigtime" id="resTime">0:00.00</span><span class="record hidden" id="resRecord">NEW BEST</span></div>
+      <div class="stats">
+        <div>Best time</div><b id="resBest">--</b>
+        <div>Falls</div><b id="resFalls">0</b>
+        <div>Top speed</div><b id="resTop">0 km/h</b>
+      </div>
+      <table class="splits" id="resSplits"></table>
+      <button class="btn primary" id="btnAgain">Run again</button>
+      <button class="btn" id="btnMenu">Main menu</button>
+    </div>
+  </div>
+
+  <div id="lockmsg" class="hidden">Click to capture the mouse</div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

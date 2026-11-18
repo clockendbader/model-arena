@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Breath — The Living Lung</title>
+  <meta name="description" content="An interactive, anatomically grounded 3D simulation of the human lungs and breathing.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M30 8v20c0 6-4 9-9 12-6 4-13 4-14 14 0 4 3 4 7 3 9-2 16-9 16-18M34 8v20c0 6 4 9 9 12 6 4 13 4 14 14 0 4-3 4-7 3-9-2-16-9-16-18' fill='none' stroke='%23ff8a96' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "./assets/vendor/three/build/three.module.js",
+      "three/addons/": "./assets/vendor/three/addons/"
+    }
+  }
+  </script>
+</head>
+<body data-mode="body" data-scenario="rest">
+  <canvas id="c" aria-label="3D model of the human chest"></canvas>
+  <div id="labels" aria-hidden="false"></div>
+  <div id="fade"></div>
+
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="brand-mark" data-i18n="brand">BREATH</div>
+      <div class="loader-track"><div id="loader-bar"></div></div>
+      <div id="loader-text" data-i18n="loading">Preparing anatomy…</div>
+    </div>
+  </div>
+
+  <header class="brand">
+    <div class="brand-mark" data-i18n="brand">BREATH</div>
+    <div class="brand-tag" data-i18n="tagline">The living lung</div>
+    <div class="brand-sub" data-i18n="subtitle">An interactive journey through human respiration</div>
+  </header>
+
+  <div class="topbar" role="toolbar">
+    <button id="btn-labels" class="tb" aria-pressed="true" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10l4 5-4 5H4z"/></svg><span data-i18n="labels">Labels</span></button>
+    <button id="btn-xray" class="tb" aria-pressed="false" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M12 5v14M5 12h14" opacity=".5"/></svg><span data-i18n="xray">X-ray</span></button>
+    <button id="btn-sound" class="tb" aria-pressed="true" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10z"/><path class="wave" d="M16 9c1.5 1.7 1.5 4.3 0 6M18.5 6.5c3 3.2 3 7.8 0 11"/></svg><span data-i18n="sound">Sound</span></button>
+    <button id="btn-facts" class="tb" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 11v5M12 8v.5"/></svg><span data-i18n="factsBtn">Facts</span></button>
+    <button id="btn-lang" class="tb tb-lang" type="button" lang="ar"><span data-i18n="language">العربية</span></button>
+  </div>
+
+  <nav class="levels" aria-label="Zoom level">
+    <button data-level="body" aria-current="step" type="button">
+      <span class="lv-num">01</span><span class="lv-text"><b data-i18n="levels.body">Body</b><small data-i18n="levelDesc.body">The whole chest breathing</small></span></button>
+    <button data-level="airways" type="button">
+      <span class="lv-num">02</span><span class="lv-text"><b data-i18n="levels.airways">Airways</b><small data-i18n="levelDesc.airways">Fly down the bronchial tree</small></span></button>
+    <button data-level="alveolus" type="button">
+      <span class="lv-num">03</span><span class="lv-text"><b data-i18n="levels.alveolus">Alveolus</b><small data-i18n="levelDesc.alveolus">Where gas exchange happens</small></span></button>
+  </nav>
+
+  <div id="legend" class="legend"></div>
+
+  <button id="panel-toggle" class="panel-toggle" type="button" aria-label="Controls">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+
+  <aside class="panel">
+    <h2 data-i18n="scenarioTitle">Scenario</h2>
+    <div class="scenarios">
+      <button data-scenario="rest" aria-pressed="true" type="button"><i class="sc-ic">
+        <svg viewBox="0 0 24 24"><path d="M3 14c3 0 3-4 6-4s3 4 6 4 3-4 6-4"/></svg></i><span data-i18n="scenarios.rest">Rest</span></button>
+      <button data-scenario="exercise" aria-pressed="false" type="button"><i class="sc-ic">
+        <svg viewBox="0 0 24 24"><path d="M3 13h4l2-6 4 12 2-6h6"/></svg></i><span data-i18n="scenarios.exercise">Exercise</span></button>
+      <button data-scenario="altitude" aria-pressed="false" type="button"><i class="sc-ic">
+        <svg viewBox="0 0 24 24"><path d="M2 19l7-12 4 6 2-3 7 9z"/></svg></i><span data-i18n="scenarios.altitude">High altitude</span></button>
+      <button data-scenario="asthma" aria-pressed="false" type="button"><i class="sc-ic">
+        <svg viewBox="0 0 24 24"><path d="M12 3v8M12 11c-2 2-5 2-6 6M12 11c2 2 5 2 6 6M9 9l3 2 3-2"/></svg></i><span data-i18n="scenarios.asthma">Asthma</span></button>
+      <button data-scenario="smoker" aria-pressed="false" type="button"><i class="sc-ic">
+        <svg viewBox="0 0 24 24"><path d="M3 16h14v3H3zM19 16v3M21 16v3M18 13c0-2 2-2 2-4s-2-2-2-4"/></svg></i><span data-i18n="scenarios.smoker">Smoker's lungs</span></button>
+    </div>
+    <p id="scenario-note" class="note"></p>
+    <p id="scenario-extra" class="note note-extra"></p>
+
+    <h2 data-i18n="controls">Breathing</h2>
+    <label class="slider">
+      <span class="sl-head"><span data-i18n="rate">Breathing rate</span><output id="rate-val"></output></span>
+      <input id="rate" type="range" min="6" max="40" step="1" value="12">
+    </label>
+    <label class="slider">
+      <span class="sl-head"><span data-i18n="depth">Breath depth</span><output id="depth-val"></output></span>
+      <input id="depth" type="range" min="250" max="3000" step="10" value="500">
+    </label>
+    <p class="hint" data-i18n="hint">Drag to orbit · scroll to zoom · right-drag to pan · click any structure</p>
+  </aside>
+
+  <section class="readouts" aria-live="off">
+    <div class="metric"><span class="m-label" data-i18n="readBpm">Breaths / min</span><span class="m-val"><b id="r-bpm">12</b></span></div>
+    <div class="metric"><span class="m-label" data-i18n="readVt">Tidal volume</span><span class="m-val"><b id="r-vt">500</b><small data-i18n="mL">mL</small></span></div>
+    <div class="metric"><span class="m-label" data-i18n="readVe">Minute ventilation</span><span class="m-val"><b id="r-ve">6.0</b><small data-i18n="Lmin">L/min</small></span></div>
+    <div class="metric metric-spo2" id="spo2-card" data-level="ok"><span class="m-label" data-i18n="readSpo2">SpO₂</span><span class="m-val"><b id="r-spo2">97</b><small data-i18n="pct">%</small></span></div>
+    <div class="metric-mini">
+      <div><span data-i18n="readPao2">Alveolar PO₂</span><b id="r-pao2"></b></div>
+      <div><span data-i18n="readPaco2">Arterial PCO₂</span><b id="r-paco2"></b></div>
+      <div><span data-i18n="readHr">Heart rate</span><b id="r-hr"></b></div>
+    </div>
+    <div class="graph-wrap">
+      <div class="graph-head"><span data-i18n="graphTitle">Lung volume</span><small>(<span data-i18n="L">L</span>)</small><span id="phase" data-phase="in">Inhale</span></div>
+      <canvas id="graph"></canvas>
+    </div>
+  </section>
+
+  <div id="info" class="info" aria-hidden="true" role="dialog">
+    <button id="info-close" class="x" type="button" aria-label="Close">×</button>
+    <h3 id="info-title"></h3>
+    <p id="info-text"></p>
+  </div>
+
+  <div id="facts" class="facts" aria-hidden="true">
+    <div class="facts-inner">
+      <button id="facts-close" class="x" type="button" aria-label="Close">×</button>
+      <h2 data-i18n="factsTitle">The lungs in numbers</h2>
+      <ul id="facts-list"></ul>
+      <p class="credits" data-i18n="credits"></p>
+    </div>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

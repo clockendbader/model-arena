@@ -1,0 +1,155 @@
+{
+  "asset": {
+    "generator": "glTF-Transform v4.5.1",
+    "version": "2.0"
+  },
+  "accessors": [
+    {
+      "type": "SCALAR",
+      "componentType": 5123,
+      "count": 6606,
+      "bufferView": 0,
+      "byteOffset": 0
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 2170,
+      "max": [
+        0.2600001096725464,
+        1.1203334331512451,
+        0.22200000286102295
+      ],
+      "min": [
+        -0.2600001096725464,
+        0.0009488463401794434,
+        -0.20999999344348907
+      ],
+      "bufferView": 1,
+      "byteOffset": 0
+    },
+    {
+      "type": "VEC3",
+      "componentType": 5126,
+      "count": 2170,
+      "bufferView": 1,
+      "byteOffset": 12
+    },
+    {
+      "type": "VEC2",
+      "componentType": 5126,
+      "count": 2170,
+      "bufferView": 1,
+      "byteOffset": 24
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 13212,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 13212,
+      "byteLength": 69440,
+      "byteStride": 32,
+      "target": 34962
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "textures": [
+    {
+      "source": 1,
+      "sampler": 0
+    },
+    {
+      "source": 0,
+      "sampler": 0
+    },
+    {
+      "source": 2,
+      "sampler": 0
+    }
+  ],
+  "images": [
+    {
+      "name": "utility_box_01_nor_gl",
+      "mimeType": "image/jpeg",
+      "uri": "textures/utility_box_01_nor_gl_1k.jpg"
+    },
+    {
+      "name": "utility_box_01_diff",
+      "mimeType": "image/jpeg",
+      "uri": "textures/utility_box_01_diff_1k.jpg"
+    },
+    {
+      "name": "utility_box_01_metal-utility_box_01_rough",
+      "mimeType": "image/jpeg",
+      "uri": "textures/utility_box_01_arm_1k.jpg"
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "utility_box_01.bin",
+      "byteLength": 82652
+    }
+  ],
+  "materials": [
+    {
+      "name": "utility_box_01",
+      "doubleSided": true,
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 2
+        }
+      },
+      "normalTexture": {
+        "index": 1
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.028",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1,
+            "NORMAL": 2,
+            "TEXCOORD_0": 3
+          },
+          "mode": 4,
+          "material": 0,
+          "indices": 0
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "utility_box_01_box",
+      "mesh": 0
+    }
+  ],
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "scene": 0
+}

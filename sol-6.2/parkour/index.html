@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#201c20">
+  <title>Afterheight · Rooftop Time Trial</title>
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {"imports":{"three":"./assets/three/build/three.module.js","three/addons/":"./assets/three/examples/jsm/"}}
+  </script>
+</head>
+<body>
+  <main>
+    <div id="world" aria-label="First-person rooftop parkour course"></div>
+    <div id="speedfx" aria-hidden="true"></div>
+    <div id="grade" aria-hidden="true"></div>
+    <div id="hud" hidden>
+      <div class="hud-timing">
+        <div class="eyebrow">RUN TIME</div><div id="clock">00:00.000</div><div id="delta"></div>
+      </div>
+      <div class="hud-course">
+        <div class="eyebrow"><img src="assets/mark.svg" alt=""> AFTERHEIGHT <span> / </span> <span id="progress-count">00 / 11</span></div>
+        <div id="segments"></div>
+      </div>
+      <div id="waypoint"><i></i><span id="waypoint-distance"></span></div>
+      <div id="reticle"></div>
+      <div id="checkpoint-toast" role="status"></div>
+      <div class="hud-instruction"><div id="move-name"></div><div id="move-tip"></div></div>
+      <div class="hud-speed"><span id="speed">00</span><small>KM/H</small><div class="gauge"><i id="gauge-fill"></i></div></div>
+      <div class="hud-keys"><span><kbd>V</kbd> VISION</span><span><kbd>R</kbd> RESPAWN</span><span><kbd>ESC</kbd> PAUSE</span></div>
+    </div>
+    <section id="start" class="screen" aria-labelledby="title">
+      <header class="masthead">
+        <a class="wordmark" href="./" aria-label="Afterheight home"><img src="assets/mark.svg" alt=""> AFTERHEIGHT</a>
+        <span class="masthead-trial">ROOFTOP TIME TRIAL</span>
+        <span class="live"><i></i> <span id="load-label" aria-live="polite">LOADING DISTRICT</span></span>
+      </header>
+      <div class="opening">
+        <div class="eyebrow opening-tag"><span></span>DISTRICT 07 <b>/</b> SUNSET COURSE</div>
+        <h1 id="title">AFTER<span>HEIGHT</span></h1>
+        <p class="intro">Race your best time across the rooftops at sunset.</p>
+        <button id="play" class="primary" disabled><span class="play-icon"></span><span>CLICK TO PLAY</span><span class="arrow">↗</span></button>
+        <div class="controls" aria-label="Game controls">
+          <div><kbd>WASD</kbd><span>MOVE</span></div>
+          <div><kbd>MOUSE</kbd><span>LOOK</span></div>
+          <div><kbd>SPACE</kbd><span>JUMP</span></div>
+          <div><kbd>SHIFT</kbd><span>SPRINT</span></div>
+          <div><kbd>C</kbd><span>SLIDE / ROLL</span></div>
+          <div><kbd>E</kbd><span>ZIPLINE</span></div>
+        </div>
+        <div id="start-error" role="alert"></div>
+      </div>
+      <aside class="district-label"><i></i><div><span>THE HIGHLINE</span><small>ROOFTOP ROUTE · 11 SECTORS</small></div></aside>
+      <footer class="footer"><span><i></i> KEYBOARD + MOUSE</span><span id="menu-best">PERSONAL BEST <b>—</b></span></footer>
+    </section>
+    <section id="pause" class="screen modal-screen" hidden>
+      <div class="panel">
+        <div class="eyebrow">AFTERHEIGHT / THE HIGHLINE</div>
+        <h2>PAUSED</h2>
+        <button class="primary" id="resume">RESUME RUN <span class="arrow">↗</span></button>
+        <button class="secondary" id="restart">RESTART COURSE</button>
+        <div class="settings">
+          <label for="sensitivity">Mouse sensitivity <output id="sensitivity-value" for="sensitivity">100%</output></label>
+          <input id="sensitivity" type="range" min="30" max="220" value="100">
+          <label class="toggle">Runner’s vision <input id="vision" type="checkbox" checked><span class="switch"></span></label>
+        </div>
+      </div>
+    </section>
+    <section id="results" class="screen modal-screen" hidden>
+      <div class="panel results-panel">
+        <div class="eyebrow" id="record-label">AFTERHEIGHT / THE HIGHLINE</div>
+        <h2>RUN COMPLETE</h2>
+        <div class="results-stats" id="results-stats"></div>
+        <div id="split-list"></div>
+        <button class="primary" id="again">RUN AGAIN <span class="arrow">↗</span></button>
+        <button class="secondary" id="menu">MAIN MENU</button>
+      </div>
+    </section>
+    <div id="fade"></div>
+  </main>
+  <script type="module" src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+{
+  "asset": {
+    "version": "2.0"
+  },
+  "extensionsUsed": [
+    "KHR_materials_transmission",
+    "KHR_materials_volume"
+  ],
+  "materials": [
+    {
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.0
+      },
+      "extensions": {
+        "KHR_materials_transmission": {
+          "transmissionFactor": 1
+        },
+        "KHR_materials_volume": {
+          "thicknessFactor": 0.075,
+          "thicknessTexture": {
+            "index": 0
+          }
+        }
+      },
+      "name": "GlassTransmission"
+    }
+  ],
+  "textures": [
+    {
+      "source": 0
+    }
+  ],
+  "images": [
+    {
+      "uri": "thickness.png"
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": []
+    }
+  ],
+  "scene": 0
+}

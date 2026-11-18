@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dusk Runner — Rooftop Time Trial</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.min.js",
+          "three/addons/": "./vendor/addons/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="world"></canvas>
+    <div id="cover"></div>
+    <div id="shade"></div>
+    <header>
+      <div class="brand">
+        <svg viewBox="0 0 48 32">
+          <path
+            d="M2 27 17 4h10L12 27zm15 0L32 4h13L29 27h-7l10-15-9 9z"
+            fill="currentColor"
+          /></svg
+        ><b>DR <span>//</span></b
+        ><span>RUNNER NETWORK</span>
+      </div>
+      <div class="tools">
+        <span class="live"><i></i> SYSTEM ONLINE</span
+        ><button id="sound" aria-label="Toggle sound" title="Sound">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 9h4l5-4v14l-5-4H4zM16 8q4 4 0 8m2-11q7 7 0 14" />
+          </svg></button
+        ><button id="settings" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 7h7m4 0h7M3 17h11m4 0h3" />
+            <circle cx="12" cy="7" r="2.4" />
+            <circle cx="16" cy="17" r="2.4" />
+          </svg>
+        </button>
+      </div>
+    </header>
+    <main>
+      <div class="hero">
+        <div class="eyebrow">
+          <span class="slashes">///</span> FIRST-PERSON PARKOUR
+        </div>
+        <h1>DUSK<br /><em>RUNNER</em><small>™</small></h1>
+        <div class="course"><span>COURSE 01</span><b></b> APEX DISTRICT</div>
+        <p>Race the rooftops. Chase your ghost.</p>
+        <button id="play" class="primary">
+          <span class="triangle"></span> CLICK TO PLAY
+          <span class="arrow">↗</span>
+        </button>
+      </div>
+      <div class="info">
+        <div class="infohead">
+          <span class="tinycross">⌖</span> COURSE INTEL <b>01 / 01</b>
+        </div>
+        <strong>APEX DISTRICT</strong>
+        <div class="stat"><span>CHECKPOINTS</span><b>08</b></div>
+        <div class="stat"><span>EST. RUN</span><b>2–3 MIN</b></div>
+        <div class="stat">
+          <span>PERSONAL BEST</span><b id="best">––:––.––</b>
+        </div>
+      </div>
+    </main>
+    <footer>
+      <div class="controlTitle"><i></i> CONTROLS</div>
+      <div id="keylist"></div>
+      <div class="build">BUILD 01.04 <span>///</span></div>
+    </footer>
+    <div id="hud" hidden>
+      <div class="timer">
+        <label>RUN TIME</label><strong id="clock"></strong
+        ><small id="split"></small>
+      </div>
+      <div class="checkpoint"><label>APEX DISTRICT</label><b id="cp"></b></div>
+      <div id="reticle">·</div>
+      <div id="prompt"></div>
+      <div id="velocity"></div>
+      <div id="streak"></div>
+    </div>
+    <div id="fade"></div>
+    <dialog id="panel">
+      <div class="eyebrow">/// RUNNER NETWORK</div>
+      <h2 id="panelTitle">PAUSED</h2>
+      <div id="panelBody"></div>
+      <div id="actions"></div>
+    </dialog>
+    <script type="module" src="game.js"></script>
+  </body>
+</html>

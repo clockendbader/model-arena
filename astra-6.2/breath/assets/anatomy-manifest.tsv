@@ -1,0 +1,233 @@
+Group	Source mesh	Anatomical structure
+heart	FJ2422	cavity of left ventricle
+heart	FJ2423	cavity of right ventricle
+heart	FJ2438	wall of left atrium
+heart	FJ2439	wall of right atrium
+airways	FJ2441	inferior lingular bronchial tree
+airways	FJ2442	left medial basal segmental bronchial tree
+airways	FJ2443	left anterior segmental bronchial tree
+airways	FJ2444	left apical segmental bronchial tree
+airways	FJ2445	left lateral basal segmental bronchial tree
+airways	FJ2446	left posterior basal segmental bronchial tree
+airways	FJ2447	left posterior segmental bronchial tree
+airways	FJ2448	left superior segmental bronchial tree
+airways	FJ2449	lateral segmental bronchial tree
+bronchi	FJ2450	left main bronchus
+airways	FJ2451	medial segmental bronchial tree
+airways	FJ2452	right anterior basal segmental bronchial tree
+airways	FJ2453	right anterior segmental bronchial tree
+airways	FJ2454	right apical segmental bronchial tree
+airways	FJ2455	right lateral basal segmental bronchial tree
+airways	FJ2456	right medial basal segmental bronchial tree
+airways	FJ2457	right posterior basal segmental bronchial tree
+airways	FJ2458	right posterior segmental bronchial tree
+airways	FJ2459	right superior segmental bronchial tree
+airways	FJ2460	left apical segmental bronchial tree
+airways	FJ2461	left apical segmental bronchial tree
+airways	FJ2462	left apical segmental bronchial tree
+airways	FJ2463	left apical segmental bronchial tree
+airways	FJ2464	left apical segmental bronchial tree
+airways	FJ2465	left posterior segmental bronchial tree
+airways	FJ2466	left posterior segmental bronchial tree
+airways	FJ2467	left anterior segmental bronchial tree
+airways	FJ2468	left anterior segmental bronchial tree
+airways	FJ2469	left anterior segmental bronchial tree
+airways	FJ2470	right posterior basal segmental bronchial tree
+airways	FJ2471	left anterior segmental bronchial tree
+airways	FJ2472	left anterior segmental bronchial tree
+airways	FJ2473	left anterior segmental bronchial tree
+airways	FJ2474	left anterior segmental bronchial tree
+airways	FJ2475	inferior lingular bronchial tree
+airways	FJ2476	superior lingular bronchial tree
+airways	FJ2477	superior lingular bronchial tree
+airways	FJ2478	superior lingular bronchial tree
+airways	FJ2479	left superior segmental bronchial tree
+airways	FJ2480	left superior segmental bronchial tree
+airways	FJ2481	right posterior basal segmental bronchial tree
+airways	FJ2482	left superior segmental bronchial tree
+airways	FJ2483	left superior segmental bronchial tree
+airways	FJ2484	left superior segmental bronchial tree
+airways	FJ2485	left superior segmental bronchial tree
+airways	FJ2486	right posterior basal segmental bronchial tree
+airways	FJ2487	right posterior basal segmental bronchial tree
+airways	FJ2488	right medial basal segmental bronchial tree
+airways	FJ2489	right posterior basal segmental bronchial tree
+airways	FJ2490	right lateral basal segmental bronchial tree
+airways	FJ2491	right lateral basal segmental bronchial tree
+airways	FJ2492	right lateral basal segmental bronchial tree
+airways	FJ2493	right anterior basal segmental bronchial tree
+airways	FJ2494	right anterior basal segmental bronchial tree
+airways	FJ2495	right superior segmental bronchial tree
+airways	FJ2496	right superior segmental bronchial tree
+airways	FJ2497	right superior segmental bronchial tree
+airways	FJ2498	right superior segmental bronchial tree
+airways	FJ2499	right superior segmental bronchial tree
+airways	FJ2500	right superior segmental bronchial tree
+airways	FJ2501	right superior segmental bronchial tree
+airways	FJ2502	right superior segmental bronchial tree
+airways	FJ2503	lateral segmental bronchial tree
+airways	FJ2504	lateral segmental bronchial tree
+airways	FJ2505	lateral segmental bronchial tree
+airways	FJ2506	medial segmental bronchial tree
+airways	FJ2507	medial segmental bronchial tree
+airways	FJ2508	medial segmental bronchial tree
+airways	FJ2509	right anterior segmental bronchial tree
+airways	FJ2510	right anterior segmental bronchial tree
+airways	FJ2511	right anterior segmental bronchial tree
+airways	FJ2512	right anterior segmental bronchial tree
+airways	FJ2513	right anterior segmental bronchial tree
+airways	FJ2514	right anterior segmental bronchial tree
+airways	FJ2515	right posterior segmental bronchial tree
+airways	FJ2516	right posterior segmental bronchial tree
+airways	FJ2517	right posterior segmental bronchial tree
+airways	FJ2518	right posterior segmental bronchial tree
+airways	FJ2519	right posterior segmental bronchial tree
+airways	FJ2520	right apical segmental bronchial tree
+airways	FJ2521	right apical segmental bronchial tree
+airways	FJ2522	right apical segmental bronchial tree
+airways	FJ2523	right apical segmental bronchial tree
+airways	FJ2524	right apical segmental bronchial tree
+airways	FJ2525	right apical segmental bronchial tree
+airways	FJ2526	right apical segmental bronchial tree
+airways	FJ2527	left posterior basal segmental bronchial tree
+airways	FJ2528	left posterior basal segmental bronchial tree
+airways	FJ2529	left posterior basal segmental bronchial tree
+airways	FJ2530	left posterior basal segmental bronchial tree
+airways	FJ2531	left posterior basal segmental bronchial tree
+airways	FJ2532	left lateral basal segmental bronchial tree
+airways	FJ2533	left lateral basal segmental bronchial tree
+airways	FJ2534	left lateral basal segmental bronchial tree
+airways	FJ2535	left anterior basal segmental bronchial tree
+airways	FJ2536	left anterior basal segmental bronchial tree
+airways	FJ2537	left medial basal segmental bronchial tree
+airways	FJ2538	left anterior basal segmental bronchial tree
+bronchi	FJ2539	right main bronchus proper
+airways	FJ2540	superior lingular bronchial tree
+trachea	FJ2541	trachea
+coronary	FJ2631	trunk of anterior interventricular branch of left coronary artery
+coronary	FJ2632	first right anterior branch of anterior interventricular branch of left coronary artery
+coronary	FJ2633	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2634	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2635	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2636	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2637	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2638	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2639	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2640	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2641	third right anterior branch of anterior interventricular branch of left coronary artery
+coronary	FJ2642	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2643	conus branch of anterior interventricular branch of left coronary artery
+coronary	FJ2644	conus branch of anterior interventricular branch of left coronary artery
+coronary	FJ2645	first right anterior branch of anterior interventricular branch of left coronary artery
+coronary	FJ2646	second right anterior branch of anterior interventricular branch of left coronary artery
+coronary	FJ2647	third right anterior branch of anterior interventricular branch of left coronary artery
+coronary	FJ2648	diagonal branch of anterior descending branch of left coronary artery
+coronary	FJ2649	circumflex branch of left coronary artery
+coronary	FJ2650	circumflex branch of left coronary artery
+coronary	FJ2651	circumflex branch of left coronary artery
+coronary	FJ2652	circumflex branch of left coronary artery
+coronary	FJ2653	circumflex branch of left coronary artery
+coronary	FJ2654	circumflex branch of left coronary artery
+coronary	FJ2667	marginal branch of right coronary artery
+coronary	FJ2668	marginal branch of right coronary artery
+coronary	FJ2671	first anterior ventricular branch of right coronary artery
+coronary	FJ2672	marginal branch of right coronary artery
+coronary	FJ2673	first anterior ventricular branch of right coronary artery
+coronary	FJ2674	marginal branch of right coronary artery
+coronary	FJ2675	marginal branch of right coronary artery
+coronary	FJ2677	first anterior ventricular branch of right coronary artery
+coronary	FJ2692	posterior interventricular branch of right coronary artery
+coronary	FJ2693	posterior interventricular branch of right coronary artery
+coronary	FJ2694	posterior interventricular branch of right coronary artery
+coronary	FJ2695	posterior interventricular branch of right coronary artery
+coronary	FJ2696	posterior interventricular branch of right coronary artery
+coronary	FJ2697	posterior interventricular branch of right coronary artery
+coronary	FJ2698	posterior interventricular branch of right coronary artery
+coronary	FJ2699	posterior interventricular branch of right coronary artery
+coronary	FJ2700	posterior interventricular branch of right coronary artery
+coronary	FJ2714	first posterior ventricular branch of right coronary artery
+coronary	FJ2715	first posterior ventricular branch of right coronary artery
+coronary	FJ2716	first posterior ventricular branch of right coronary artery
+coronary	FJ2717	first posterior ventricular branch of right coronary artery
+coronary	FJ2718	first posterior ventricular branch of right coronary artery
+coronary	FJ2719	first posterior ventricular branch of right coronary artery
+coronary	FJ2720	first posterior ventricular branch of right coronary artery
+coronary	FJ2721	first posterior ventricular branch of right coronary artery
+coronary	FJ2722	first posterior ventricular branch of right coronary artery
+coronary	FJ2723	trunk of right coronary artery
+coronary	FJ2737	trunk of left coronary artery
+skin	FJ2810	skin
+diaphragm	FJ3131	diaphragm
+ribs	FJ3153	xiphoid process
+spine	FJ3154	tenth thoracic vertebra
+spine	FJ3155	eleventh thoracic vertebra
+spine	FJ3156	twelfth thoracic vertebra
+spine	FJ3158	first thoracic vertebra
+spine	FJ3160	second thoracic vertebra
+spine	FJ3163	third thoracic vertebra
+spine	FJ3166	fourth thoracic vertebra
+spine	FJ3169	fifth thoracic vertebra
+spine	FJ3171	sixth thoracic vertebra
+spine	FJ3173	seventh thoracic vertebra
+spine	FJ3174	eighth thoracic vertebra
+spine	FJ3175	ninth thoracic vertebra
+ribs	FJ3178	body of sternum
+ribs	FJ3225	left tenth rib
+ribs	FJ3226	left eleventh rib
+ribs	FJ3227	left twelfth rib
+ribs	FJ3228	left first rib
+ribs	FJ3229	left second rib
+ribs	FJ3230	left third rib
+ribs	FJ3231	left fourth rib
+ribs	FJ3232	left fifth rib
+ribs	FJ3233	left sixth rib
+ribs	FJ3234	left seventh rib
+ribs	FJ3235	left eighth rib
+ribs	FJ3236	left ninth rib
+ribs	FJ3237	left clavicle
+ribs	FJ3239	left first costal cartilage
+ribs	FJ3242	left second costal cartilage
+ribs	FJ3245	left third costal cartilage
+ribs	FJ3248	left fourth costal cartilage
+ribs	FJ3251	left fifth costal cartilage
+ribs	FJ3254	left sixth costal cartilage
+ribs	FJ3255	left seventh costal cartilage
+ribs	FJ3290	manubrium
+ribs	FJ3330	right tenth rib
+ribs	FJ3331	right eleventh rib
+ribs	FJ3332	right twelfth rib
+ribs	FJ3333	right first costal cartilage
+ribs	FJ3334	right first rib
+ribs	FJ3335	right second costal cartilage
+ribs	FJ3336	right second rib
+ribs	FJ3337	right third costal cartilage
+ribs	FJ3338	right third rib
+ribs	FJ3339	right fourth costal cartilage
+ribs	FJ3340	right fourth rib
+ribs	FJ3341	right fifth costal cartilage
+ribs	FJ3342	right fifth rib
+ribs	FJ3343	right sixth costal cartilage
+ribs	FJ3344	right sixth rib
+ribs	FJ3345	right seventh costal cartilage
+ribs	FJ3346	right seventh rib
+ribs	FJ3347	right eighth rib
+ribs	FJ3348	right ninth rib
+ribs	FJ3362	right clavicle
+lu	FJ6595	Parenchyma of apicoposterior bronchopulmonary segment
+lu	FJ6597	Parenchyma of apicoposterior bronchopulmonary segment
+lu	FJ6598	Parenchyma of left anterior bronchopulmonary segment
+lu	FJ6599	Parenchyma of superior lingular bronchopulmonary segment
+lu	FJ6600	Parenchyma of inferior lingular bronchopulmonary segment
+ll	FJ6596	Parenchyma of left posterior basal bronchopulmonary segment
+ll	FJ6601	Parenchyma of left superior bronchopulmonary segment
+ll	FJ6602	Parenchyma of left anterior basal bronchopulmonary segment
+ll	FJ6603	Parenchyma of left lateral basal bronchopulmonary segment
+ru	FJ6604	Parenchyma of right apical bronchopulmonary segment
+ru	FJ6606	Parenchyma of right posterior bronchopulmonary segment
+ru	FJ6607	Parenchyma of right anterior bronchopulmonary segment
+rm	FJ6608	Parenchyma of lateral bronchopulmonary segment
+rm	FJ6609	Parenchyma of medial bronchopulmonary segment
+rl	FJ6605	Parenchyma of right posterior basal bronchopulmonary segment
+rl	FJ6610	Parenchyma of right superior bronchopulmonary segment
+rl	FJ6611	Parenchyma of right anterior basal bronchopulmonary segment
+rl	FJ6612	Parenchyma of right lateral basal bronchopulmonary segment

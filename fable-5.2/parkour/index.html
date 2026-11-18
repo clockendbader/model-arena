@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAST LIGHT — Rooftop Run</title>
+<style>
+  :root { --warm: #ffb45e; --hot: #ff4a2b; --cool: #6fe7ff; --ink: rgba(8, 10, 14, .72); --line: rgba(255, 255, 255, .16); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #0b0d12; overflow: hidden; color: #fff;
+    font-family: "Avenir Next Condensed", "Barlow Condensed", "Roboto Condensed", "Helvetica Neue", "Segoe UI", Arial, sans-serif; }
+  canvas#c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .hidden { display: none !important; }
+
+  /* ---------- HUD ---------- */
+  #hud { position: fixed; inset: 0; pointer-events: none; text-shadow: 0 1px 10px rgba(0, 0, 0, .55); }
+  #timer { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); font-size: 40px; font-weight: 600; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+  #best { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); font-size: 14px; letter-spacing: .22em; opacity: .7; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+  #split { position: absolute; top: 100px; left: 50%; transform: translateX(-50%); font-size: 24px; font-weight: 600; letter-spacing: .08em; opacity: 0; transition: opacity .25s; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  #split.show { opacity: 1; }
+  #split .name { font-size: 13px; letter-spacing: .3em; display: block; text-align: center; opacity: .8; text-transform: uppercase; margin-bottom: 2px; }
+  .ahead { color: #6dff9c; } .behind { color: #ff6a5a; } .neutral { color: #fff; }
+  #cpcount { position: absolute; top: 26px; right: 30px; font-size: 14px; letter-spacing: .26em; text-transform: uppercase; text-align: right; opacity: .9; }
+  #cpcount b { font-size: 26px; letter-spacing: .05em; font-weight: 600; display: block; }
+  #falls { position: absolute; top: 26px; left: 30px; font-size: 14px; letter-spacing: .26em; text-transform: uppercase; opacity: .9; }
+  #falls b { font-size: 26px; letter-spacing: .05em; font-weight: 600; display: block; }
+  #speed { position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%); width: 260px; }
+  #speed .bar { height: 4px; background: rgba(255, 255, 255, .18); border-radius: 2px; overflow: hidden; }
+  #speed .fill { height: 100%; width: 0; background: linear-gradient(90deg, #fff, var(--warm) 60%, var(--hot)); border-radius: 2px; }
+  #speed .num { margin-top: 6px; text-align: center; font-size: 13px; letter-spacing: .3em; opacity: .75; font-variant-numeric: tabular-nums; }
+  #hint { position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); padding: 10px 20px; background: var(--ink); border: 1px solid var(--line); border-left: 3px solid var(--hot);
+    font-size: 18px; letter-spacing: .08em; opacity: 0; transition: opacity .35s; white-space: nowrap; text-shadow: none; }
+  #hint.show { opacity: 1; }
+  #prompt { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); font-size: 18px; letter-spacing: .2em; opacity: 0; transition: opacity .15s; }
+  #prompt.show { opacity: 1; }
+  #prompt kbd { display: inline-block; border: 2px solid #fff; border-radius: 6px; padding: 2px 10px; margin-right: 10px; font-family: inherit; font-weight: 700; background: rgba(0, 0, 0, .35); }
+  #capture { position: absolute; left: 50%; top: 42%; transform: translateX(-50%); padding: 8px 18px; background: var(--ink); border: 1px solid var(--line); font-size: 15px; letter-spacing: .24em; text-transform: uppercase; display: none; text-shadow: none; }
+  #capture.show { display: block; }
+  #crosshair { position: absolute; left: 50%; top: 50%; width: 5px; height: 5px; margin: -2.5px; border-radius: 50%; background: rgba(255, 255, 255, .75); box-shadow: 0 0 6px rgba(0, 0, 0, .6); }
+  #toast { position: absolute; left: 50%; top: 34%; transform: translateX(-50%); font-size: 30px; font-weight: 600; letter-spacing: .3em; text-transform: uppercase; opacity: 0; transition: opacity .3s; white-space: nowrap; }
+  #toast.show { opacity: 1; }
+  #rvtag { position: absolute; right: 30px; bottom: 34px; font-size: 12px; letter-spacing: .26em; text-transform: uppercase; opacity: .65; }
+  #rvtag i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--hot); margin-right: 8px; box-shadow: 0 0 8px var(--hot); }
+  #rvtag.off i { background: #666; box-shadow: none; }
+
+  /* ---------- screens ---------- */
+  .screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    background: radial-gradient(ellipse at 50% 40%, rgba(12, 14, 20, .35), rgba(6, 7, 10, .86)); backdrop-filter: blur(3px); }
+  #loading { background: #0b0d12; }
+  h1 { margin: 0; font-size: clamp(56px, 11vw, 150px); font-weight: 700; letter-spacing: .14em; line-height: .95; text-indent: .14em;
+    background: linear-gradient(180deg, #fff 20%, #ffd9a0 55%, #ff7a3c 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 6px 30px rgba(255, 120, 40, .35)); }
+  .sub { margin-top: 10px; font-size: 16px; letter-spacing: .62em; text-indent: .62em; text-transform: uppercase; opacity: .85; }
+  .controls { margin: 34px auto 0; display: grid; grid-template-columns: auto auto; gap: 7px 22px; font-size: 16px; letter-spacing: .08em; text-align: left; }
+  .controls span:nth-child(odd) { text-align: right; color: var(--warm); font-weight: 600; letter-spacing: .14em; }
+  .cta { margin-top: 38px; font-size: 22px; letter-spacing: .4em; text-indent: .4em; text-transform: uppercase; animation: pulse 1.6s ease-in-out infinite; cursor: pointer; pointer-events: auto; }
+  @keyframes pulse { 50% { opacity: .45; } }
+  .small { margin-top: 16px; font-size: 13px; letter-spacing: .2em; opacity: .6; text-transform: uppercase; font-variant-numeric: tabular-nums; }
+  #bar { width: min(420px, 70vw); height: 3px; background: rgba(255, 255, 255, .14); margin-top: 34px; }
+  #barfill { height: 100%; width: 0; background: linear-gradient(90deg, #fff, var(--warm), var(--hot)); transition: width .15s; }
+  .panel { background: var(--ink); border: 1px solid var(--line); padding: 30px 44px; min-width: 380px; }
+  .panel h2 { margin: 0 0 20px; font-size: 34px; letter-spacing: .3em; text-indent: .3em; font-weight: 600; }
+  button { display: block; width: 100%; margin: 8px 0; padding: 12px 18px; background: rgba(255, 255, 255, .06); border: 1px solid var(--line); color: #fff; font: inherit; font-size: 17px; letter-spacing: .24em; text-transform: uppercase; cursor: pointer; transition: background .15s, border-color .15s; }
+  button:hover, button:focus-visible { background: rgba(255, 120, 60, .28); border-color: var(--warm); outline: none; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin: 14px 0 6px; font-size: 14px; letter-spacing: .18em; text-transform: uppercase; }
+  input[type=range] { flex: 1; accent-color: var(--warm); }
+  input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--hot); }
+  .big { font-size: 72px; font-weight: 600; letter-spacing: .05em; font-variant-numeric: tabular-nums; line-height: 1; }
+  table { margin: 18px auto 6px; border-collapse: collapse; font-size: 15px; letter-spacing: .08em; font-variant-numeric: tabular-nums; }
+  td { padding: 3px 14px; text-align: right; } td:first-child { text-align: left; opacity: .8; text-transform: uppercase; letter-spacing: .14em; font-size: 13px; }
+  .stats { display: flex; gap: 40px; justify-content: center; margin-top: 12px; font-size: 13px; letter-spacing: .24em; text-transform: uppercase; }
+  .stats b { display: block; font-size: 26px; letter-spacing: .04em; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  #err { position: fixed; left: 12px; bottom: 12px; right: 12px; color: #ff8d7a; font: 13px/1.4 ui-monospace, Menlo, monospace; white-space: pre-wrap; pointer-events: none; }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/build/three.module.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud" class="hidden">
+  <div id="falls">Falls<b id="fallsN">0</b></div>
+  <div id="timer">0:00.00</div>
+  <div id="best"></div>
+  <div id="split"></div>
+  <div id="cpcount">Checkpoint<b id="cpN">0 / 10</b></div>
+  <div id="toast"></div>
+  <div id="crosshair"></div>
+  <div id="prompt"><kbd>E</kbd>ZIPLINE</div>
+  <div id="capture">Click to capture the mouse</div>
+  <div id="hint"></div>
+  <div id="speed"><div class="bar"><div class="fill" id="speedFill"></div></div><div class="num" id="speedNum">0 KM/H</div></div>
+  <div id="rvtag"><i></i>Runner's vision · V</div>
+</div>
+
+<div id="loading" class="screen">
+  <h1>LAST LIGHT</h1>
+  <div class="sub">Rooftop run</div>
+  <div id="bar"><div id="barfill"></div></div>
+  <div class="small" id="loadtxt">Loading the city…</div>
+</div>
+
+<div id="start" class="screen hidden">
+  <h1>LAST LIGHT</h1>
+  <div class="sub">Rooftop run · golden hour</div>
+  <div class="controls">
+    <span>W A S D</span><span>Move</span>
+    <span>MOUSE</span><span>Look</span>
+    <span>SHIFT</span><span>Sprint</span>
+    <span>SPACE</span><span>Jump · hold for height · kick off walls</span>
+    <span>C / CTRL</span><span>Slide · roll just before a big landing</span>
+    <span>E</span><span>Grab a zipline</span>
+    <span>R</span><span>Back to last checkpoint</span>
+    <span>V</span><span>Toggle runner's vision</span>
+    <span>ESC</span><span>Pause</span>
+  </div>
+  <div class="cta" id="play">Click to play</div>
+  <div class="small" id="startBest"></div>
+</div>
+
+<div id="pause" class="screen hidden">
+  <div class="panel">
+    <h2>PAUSED</h2>
+    <button id="resume">Resume</button>
+    <button id="toCp">Last checkpoint</button>
+    <button id="restart">Restart run</button>
+    <div class="row"><span>Mouse sensitivity</span><input id="sens" type="range" min="0.2" max="3" step="0.05" value="1"><span id="sensV">1.00</span></div>
+    <div class="row"><span>Volume</span><input id="vol" type="range" min="0" max="1" step="0.05" value="0.8"><span id="volV">80</span></div>
+    <div class="row"><span>Runner's vision</span><input id="rv" type="checkbox" checked></div>
+  </div>
+</div>
+
+<div id="results" class="screen hidden">
+  <div class="panel">
+    <h2 id="resTitle">RUN COMPLETE</h2>
+    <div class="big" id="resTime">0:00.00</div>
+    <div class="small" id="resDelta"></div>
+    <div class="stats"><div>Best<b id="resBest">—</b></div><div>Falls<b id="resFalls">0</b></div><div>Top speed<b id="resTop">0</b></div></div>
+    <table id="resSplits"></table>
+    <button id="again">Run again</button>
+  </div>
+</div>
+<div id="err"></div>
+<script src="./js/boot.js"></script>
+</body>
+</html>
